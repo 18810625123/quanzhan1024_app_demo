@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  quanzhan1024_rails_demo:
+    build:
+      context: ./projects/quanzhan1024_rails_demo
+    command: bundle exec puma --config config/puma.rb
+    #depends_on:
+      #- db
+      #- rabbitmq
+      #- redis
+    ports:
+      - 3000:3000
+    env_file:
+      - ./projects/quanzhan1024_rails_demo/docker.env.pro
+    volumes:
+      - ./projects/quanzhan1024_rails_demo/app:/home/app/app:rw
+      - ./projects/quanzhan1024_rails_demo/config:/home/app/config:rw
+      - ./projects/quanzhan1024_rails_demo/db:/home/app/db:rw
+      - ./projects/quanzhan1024_rails_demo/lib:/home/app/lib:rw
+      - ./projects/quanzhan1024_rails_demo/public:/home/app/public:rw
+      - ./projects/quanzhan1024_rails_demo/spec:/home/app/spec:rw
+      - ../logs/quanzhan1024_rails_demo:/home/app/log
+      - ./projects/quanzhan1024_rails_demo/tmp/pids:/home/app/tmp/pids:rw
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./db_data:/var/lib/mysql
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "123"
+
+  redis:
+    image: redis:4.0.9-alpine
+    ports:
+      - 6379:6379
